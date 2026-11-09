@@ -55,8 +55,34 @@ public static int[] findAll(String text, String p) {
      * can have the same hash.
      * Example: a = "ACGTAC", b = "TTACGT", k = 4: the words of a are ACGT, CGTA, GTAC; only ACGT is in b, so the answer is 1.
      */
-    public static int sharedWords(String a, String b, int k) {
-        // TODO Mission 4
-        return -1;
+public static int sharedWords(String a, String b, int k) {
+    int n = a.length(), m = b.length();
+    if (n < k || m < k) return 0;
+    final long MOD = 1_000_000_007L, BASE = 131;
+    long high = 1;                             
+    for (int i = 0; i < k - 1; i++) high = high * BASE % MOD;
+
+    Map<Long, List<Integer>> table = new HashMap<>();
+    long h = 0;
+    for (int i = 0; i < k; i++) h = (h * BASE + b.charAt(i)) % MOD;
+    table.computeIfAbsent(h, x -> new ArrayList<>()).add(0);
+    for (int i = k; i < m; i++) {
+        h = ((h - b.charAt(i - k) * high % MOD + MOD) % MOD * BASE + b.charAt(i)) % MOD;
+        table.computeIfAbsent(h, x -> new ArrayList<>()).add(i - k + 1);
     }
+
+    int count = 0;
+    h = 0;
+    for (int i = 0; i < k; i++) h = (h * BASE + a.charAt(i)) % MOD;
+    for (int i = 0; ; i++) {                    
+        List<Integer> cand = table.get(h);
+        if (cand != null) {
+            for (int s : cand)
+                if (a.regionMatches(i, b, s, k)) { count++; break; }  
+        }
+        if (i + k >= n) break;
+        h = ((h - a.charAt(i) * high % MOD + MOD) % MOD * BASE + a.charAt(i + k)) % MOD;
+    }
+    return count;
+}
 }
