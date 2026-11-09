@@ -22,7 +22,7 @@ The 9 lines my program prints on my data (`java -cp out Main`):
 
 My outbreak report (a screenshot of `output/outbreak.html`):
 
-![outbreak](output/outbreak.png)
+![outbreak](output/output.png)
 
 ## Questions
 
